@@ -34,20 +34,42 @@ install.packages("devtools")
 devtools::install_github("alegiac95/rdocodeR")
 ```
 
+> [!NOTE]
+> `rdocodeR` can generate the term-specific eigenstrap null maps locally on first use. If no suitable Python environment is provided, `rdocodeR` will create a private virtual environment in the user cache, install the required Python packages there, and reuse that environment on later runs. You can also point the package to an existing Python interpreter with `python = "/path/to/python"` in `rdoc_setup()` or `rdoc_decode()`. The first setup run may take time and disk space because the default workflow generates and caches `1000` null maps per term.
+
 ## ⚡ Quick Workflow
 
 1. Decode your overlay with `rdoc_decode()`.
 2. Plot one result with `rdoc_circleplot()`.
 3. Compare multiple results with `rdoc_compare_heatplot()` or `rdoc_compare_fanplot()`.
 
-### 1) Decode an Overlay
+### Minimal Example
 
 ```r
 library(rdocodeR)
 
+terms <- readRDS(rdoc_terms_file())
+overlay <- terms[[1]]
+
+res <- rdoc_decode(fs_overlay = overlay)
+head(res)
+```
+
+### 1) Decode an Overlay
+
+`rdoc_decode()` uses cached term-specific eigenstrap null maps.
+These null maps are **not** shipped precomputed with the package. Instead, on first use,
+`rdocodeR` can generate and cache them locally through `rdoc_setup()`.
+The default setup generates `1000` nulls per term, saves them in the user cache directory,
+and then reuses them automatically on later runs.
+
+```r
+library(rdocodeR)
+
+rdoc_setup()   # optional pre-warm; defaults to 1000 nulls
+
 res <- rdoc_decode(
   fs_overlay = your_overlay,
-  perm_method = "eigen",   # default
   cor_method = "pearson"   # default
 )
 
@@ -113,7 +135,7 @@ p_fan
 - `rdoc_available_palettes()`
 - `plot_rdoc_legend()`
 - `plot_rdoc_heatmap_legend()`
-- `rdoc_terms_reference()` and `rdoc_terms_file()`
+- `rdoc_terms_reference()`, `rdoc_terms_file()`, `rdoc_term_nulls_dir()`, and `rdoc_setup()`
 
 ## 🔗 References
 

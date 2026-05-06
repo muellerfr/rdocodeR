@@ -8,10 +8,12 @@ rdoc_decode(
   fs_overlay,
   save_results = FALSE,
   results_file = NULL,
-  perm_method = c("eigen", "nulls"),
-  fs_surrogate = NULL,
   cor_method = c("pearson", "spearman"),
   absolute_r = FALSE,
+  n_nulls = rdoc_default_n_nulls(),
+  auto_setup = TRUE,
+  python = NULL,
+  setup_n_jobs = 1L,
   mc_cores = max(1L, parallel::detectCores() - 1L)
 )
 }
@@ -23,18 +25,20 @@ rdoc_decode(
 \item{results_file}{Optional output path for the TSV file when \code{save_results = TRUE}.
 If \code{NULL}, defaults to \code{rdoc_decode_results.tsv} in the current working directory.}
 
-\item{perm_method}{Correlation permutation method (\code{"eigen"} or \code{"nulls"}).
-Default is \code{"eigen"}.}
-
-\item{fs_surrogate}{Optional precomputed surrogate matrix for
-\code{perm_method = "nulls"} or \code{"eigen"}. For \code{"eigen"}, you can also
-pass the raw list returned by \code{fsnull::fs_create_eigenstraps()}
-(with \code{lh} and \code{rh}), which will be combined automatically.}
-
 \item{cor_method}{Correlation method (\code{"pearson"} or \code{"spearman"}).
 Default is \code{"pearson"}.}
 
 \item{absolute_r}{Logical; if \code{TRUE}, stores absolute values of \code{r}.}
+
+\item{n_nulls}{Number of cached eigenstrap nulls per term. Default is \code{1000}.}
+
+\item{auto_setup}{Logical; if \code{TRUE}, run \code{\link[=rdoc_setup]{rdoc_setup()}} automatically when cached nulls
+are missing.}
+
+\item{python}{Optional Python interpreter path forwarded to \code{\link[=rdoc_setup]{rdoc_setup()}} when
+\code{auto_setup = TRUE}.}
+
+\item{setup_n_jobs}{Number of Python jobs used during automatic null generation.}
 
 \item{mc_cores}{Number of cores used for Unix \code{mclapply}.}
 }
@@ -42,6 +46,9 @@ Default is \code{"pearson"}.}
 A data frame with columns \code{Domain}, \code{Term}, \code{r}, and \code{p}.
 }
 \description{
-Computes spatial correlations between a FreeSurfer overlay and internal RDoC term maps,
-and optionally writes a TSV file with the results.
+Computes spatial correlations between a cortical overlay and the internal RDoC term maps,
+using cached per-term eigenstrap null maps to estimate permutation p-values. These null maps
+are not shipped precomputed with the package. By default, \code{rdocodeR} will generate the
+required null maps on first use and then reuse them from the user cache directory on
+subsequent runs.
 }
