@@ -35,7 +35,36 @@ devtools::install_github("alegiac95/rdocodeR")
 ```
 
 > [!NOTE]
-> `rdocodeR` can generate the term-specific eigenstrap null maps locally on first use. If no suitable Python environment is provided, `rdocodeR` will create a private virtual environment in the user cache, install the required Python packages there, and reuse that environment on later runs. You can also point the package to an existing Python interpreter with `python = "/path/to/python"` in `rdoc_setup()` or `rdoc_decode()`. The first setup run may take time and disk space because the default workflow generates and caches `1000` null maps per term.
+> `rdocodeR` does **not** ship precomputed term-specific null maps. Instead, it generates them locally the first time you set up or run the decoder. If no suitable Python environment is provided, `rdocodeR` will create a private virtual environment in the user cache, install the required Python packages there, and reuse that environment on later runs. You can also point the package to an existing Python interpreter with `python = "/path/to/python"` in `rdoc_setup()` or `rdoc_decode()`. The first setup run may take time and disk space because the default workflow generates and caches `1000` null maps per term.
+
+### After Installation: Generate the Null Maps
+
+Recommended explicit setup:
+
+```r
+library(rdocodeR)
+
+rdoc_setup()  # generates and caches 1000 null maps per term
+```
+
+This will:
+
+1. create or reuse a Python environment if needed
+2. install the required Python packages for eigenstrapping
+3. generate the cached null maps locally
+4. reuse the same cached nulls on later runs
+
+If you already have a Python interpreter you want to use:
+
+```r
+rdoc_setup(python = "/path/to/python")
+```
+
+If you prefer to skip explicit setup, `rdoc_decode()` can do it automatically on first use:
+
+```r
+res <- rdoc_decode(fs_overlay = your_overlay)
+```
 
 ## ⚡ Quick Workflow
 
