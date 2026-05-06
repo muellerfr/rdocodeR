@@ -35,7 +35,7 @@ devtools::install_github("alegiac95/rdocodeR")
 ```
 
 > [!NOTE]
-> `rdocodeR` does **not** ship precomputed term-specific null maps. Instead, it generates them locally the first time you set up or run the decoder. If no suitable Python environment is provided, `rdocodeR` will create a private virtual environment in the user cache, install the required Python packages there, and reuse that environment on later runs. You can also point the package to an existing Python interpreter with `python = "/path/to/python"` in `rdoc_setup()` or `rdoc_decode()`. The first setup run may take time and disk space because the default workflow generates and caches `1000` null maps per term.
+> `rdocodeR` does **not** ship precomputed term-specific null maps. Instead, it generates them locally the first time you set up or run the decoder. If no suitable Python environment is provided, `rdocodeR` will create a private virtual environment in the user cache, install the required Python packages there, and reuse that environment on later runs. You can also point the package to an existing Python interpreter with `python = "/path/to/python"` in `rdoc_setup()` or `rdoc_decode()`. The first setup run may take time and disk space because the default workflow generates and caches `1000` null maps per term. In practice, the initial setup can take up to about 2 to 3 hours depending on the machine, while later uses of `rdoc_decode()` typically finish in about a minute because the cached nulls are reused.
 
 ### After Installation: Generate the Null Maps
 
@@ -53,6 +53,13 @@ This will:
 2. install the required Python packages for eigenstrapping
 3. generate the cached null maps locally
 4. reuse the same cached nulls on later runs
+
+You can also choose how many null maps to generate:
+
+```r
+rdoc_setup(n_nulls = 500)
+rdoc_setup(n_nulls = 2000)
+```
 
 If you already have a Python interpreter you want to use:
 
