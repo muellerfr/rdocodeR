@@ -28,6 +28,23 @@ rdoc_terms_reference <- function() {
       "Motor Actions", "Motor Inhibition and Termination", "Motor Initiation",
       "Innate Motor Patterns"
     ),
+    term_id = c(
+      "arousal", "circadian_sleep_wakefulness", "attention",
+      "goal", "selection",
+      "performance_monitoring", "response_selection",
+      "suppression", "declarative_memory",
+      "memory", "language", "perception_auditory",
+      "perception_multimodal", "perception_olfactory", "somatosensory_perception",
+      "visual_perception", "interference_control",
+      "working_memory_maintenance_working_memory_capacity",
+      "working_memory_updating", "fear", "loss", "anxiety",
+      "prediction_error", "probabilistic_learning_reinforcement_learning",
+      "reward_anticipation", "reward_response", "reward_probability", 
+      "attachment", "animacy", "action_perception",
+      "communication", "sensory_agency_sensory_ownership", "execution",
+      "motor_action", "motor_inhibition", "motor_initiation",
+      "motor_pattern"
+    ),
     stringsAsFactors = FALSE
   )
 }
