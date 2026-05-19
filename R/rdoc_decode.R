@@ -114,6 +114,16 @@ rdoc_decode <- function(fs_overlay,
   if (!is.numeric(fs_overlay) || length(dim(fs_overlay)) > 1L) {
     stop("`fs_overlay` must be a numeric vector.", call. = FALSE)
   }
+  
+  term_order <- match(ref$term_id, names(terms))
+  if (anyNA(term_order)) {
+    stop(
+      "Some term_ids in the reference table have no matching entry in the bundled term maps.",
+      call. = FALSE
+    )
+  }
+  terms <- terms[term_order]
+  
   if (length(terms) != nrow(ref)) {
     stop(
       sprintf(
@@ -135,7 +145,7 @@ rdoc_decode <- function(fs_overlay,
     )
   }
 
-  term_ids <- names(terms)
+  term_ids <- names(terms) # now in same order as ref file
   if (is.null(term_ids) || any(!nzchar(term_ids))) {
     term_ids <- sprintf("term_%03d", seq_along(terms))
   }
@@ -160,10 +170,18 @@ rdoc_decode <- function(fs_overlay,
   }
 
   worker <- function(i) {
+    tid <- term_ids[[i]]
+    
+    # Explicit check: Does the nulls-file match the term?
+    stopifnot(grepl(paste0("^", tid, "_eigenstraps\\.rds$"), basename(null_files[[i]])))
+    
+    # Does the ref entry match the term?
+    stopifnot(identical(ref$term_id[[i]], tid))
+    
     test <- tryCatch(
       rdoc_spatial_cor_with_nulls_pairwise(
-        x = fs_overlay,
-        y = terms[[i]],
+        x = terms[[tid]],
+        y = fs_overlay,
         x_nulls = readRDS(null_files[[i]]),
         method = cor_method
       ),
